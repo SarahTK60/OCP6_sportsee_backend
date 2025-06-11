@@ -47,14 +47,13 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const user = getUserById(decodedToken.userId);
-  console.log(user);
   const runningData = user.runningData;
 
   // Calculate overall statistics
   const totalDistance = runningData.reduce(
     (sum, session) => sum + session.distance,
     0
-  );
+  ).toFixed(1);
   const totalSessions = runningData.length;
   const totalDuration = runningData.reduce(
     (sum, session) => sum + session.duration,
