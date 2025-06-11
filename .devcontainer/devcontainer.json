@@ -17,7 +17,7 @@
   // Add the IDs of extensions you want installed when the container is created.
   "extensions": [],
 
-  "runArgs": ["-p", "8000:3800"]
+  "runArgs": ["-p", "8000:8000"]
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
