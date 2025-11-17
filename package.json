@@ -1,5 +1,5 @@
 {
-  "name": "P6-front-end-dashboard",
+  "name": "server",
   "version": "1.0.0",
   "description": "Backend for the 6th project of the new path Front-end Developper",
   "main": "index/app.js",
@@ -18,7 +18,7 @@
     "jsonwebtoken": "^9.0.2"
   },
   "scripts": {
-    "dev": "node_modules/.bin/nodemon app/index.js",
+    "dev": "nodemon app/index.js",
     "start": "node app/index.js"
   }
 }
