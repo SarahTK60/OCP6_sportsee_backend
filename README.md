@@ -11,16 +11,15 @@ To start this project, you are free to use Docker or not. In this documentation,
 ### 2.1 Prerequisites
 
 - [NodeJS (**version 12.18**)](https://nodejs.org/en/) or higher (tested up to Node 20.0)
-- [Yarn](https://yarnpkg.com/)
+- [npm](https://www.npmjs.com/)
 
 If you are working with several versions of NodeJS, we recommend you install [nvm](https://github.com/nvm-sh/nvm). This tool will allow you to easily manage your NodeJS versions.
 
 ### 2.2 Launching the project
 
-- Fork the repository
-- Clone it on your computer.
-- The `yarn` command will allow you to install the dependencies.
-- The `yarn dev` command will allow you to run the micro API.
+- Clone the repository on your computer.
+- The `npm install` command will allow you to install the dependencies.
+- The `npm run dev` command will allow you to run the micro API.
 
 ## 3. Project (**with Docker**)
 
@@ -41,7 +40,7 @@ Finally, if you have VsCode, you can easily launch your project in a docker envi
 
 You will need the [Remote Development extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack). Once you have this extension installed, just click on the `Reopen in Container` button.
 
-Once in the container, run the `yarn dev` command.
+Once in the container, run the `npm run dev` command.
 
 ## 4. Authentication
 
@@ -50,15 +49,15 @@ The API uses JWT (JSON Web Token) authentication. To access the endpoints:
 1. First obtain a JWT token by logging in:
 
 ```bash
-curl -X POST http://localhost:8000/login \
+curl -X POST "http://localhost:8000/login" \
   -H "Content-Type: application/json" \
-  -d '{"username": "karldovineau", "password": "password123"}'
+  -d '{"username": "sophiemartin", "password": "password123"}'
 ```
 
 2. Use the received token in subsequent requests in the Authorization header:
 
 ```bash
-curl -H "Authorization: Bearer your-jwt-token" http://localhost:8000/user
+curl -H "Authorization: Bearer your-jwt-token" "http://localhost:8000/user-info"
 ```
 
 ### 4.1 Available Users
@@ -83,56 +82,108 @@ All these endpoints require authentication via a Bearer token in the header:
 `Authorization: Bearer <your_token>`
 
 #### Get User Information
+
 ```http
 GET /api/user-info
 ```
+
 Returns user profile information, statistics, and goals.
 
 #### Get Activity Sessions
+
 ```http
 GET /api/user-activity?startWeek=<date>&endWeek=<date>
 ```
+
 Returns running sessions between two dates.
 
 **Parameters:**
+
 - `startWeek`: Start date (ISO format)
 - `endWeek`: End date (ISO format)
 
-
-#### Get Profile Image
-```http
-GET /api/profile-image
-```
-Returns the user's profile image path.
-
-#### Access Uploaded Images
-```http
-GET /uploads/<filename>
-```
-Endpoint to access uploaded images.
-
-
 #### Notes
+
 - All dates should be in ISO format (YYYY-MM-DD)
 - Image uploads are limited to 5MB
 - Supported image formats: jpg, jpeg, png, gif
 - All distances are in kilometers
 - All durations are in minutes
 
-
 ### 5.3 Examples of queries
 
+#### 5.3.1 Login
+
 ```bash
-# Login
-curl -X POST http://localhost:8000/login \
+curl -X POST "http://localhost:8000/api/login" \
   -H "Content-Type: application/json" \
-  -d '{"username": "karldovineau", "password": "password123"}'
+  -d '{"username":"karl","password":"password123"}'
+```
 
-# Get user data
-curl -H "Authorization: Bearer your-jwt-token" http://localhost:8000/user
+Response:
 
-# Get user activity
-curl -H "Authorization: Bearer your-jwt-token" http://localhost:8000/user/activity
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5...",
+  "userId": "user123"
+}
+```
+
+#### 5.3.2 Get user info
+
+```bash
+curl -H "Authorization: Bearer your-jwt-token" "http://localhost:8000/user-info"
+```
+
+Response :
+
+```json
+{
+  "profile": {
+    "firstName": "Sophie",
+    "lastName": "Martin",
+    "createdAt": "2025-01-01",
+    "age": 32,
+    "weight": 60,
+    "height": 165,
+    "profilePicture": "http://localhost:8000/images/sophie.jpg",
+    "weeklyGoal": 2,
+    "gender": "female"
+  },
+  "statistics": {
+    "totalDistance": "2250.2",
+    "totalSessions": 348,
+    "totalDuration": 14625
+  }
+}
+```
+
+#### 5.3.3 Get user activity
+
+```bash
+curl -H "Authorization: Bearer your-jwt-token" \
+"http://localhost:8000/api/user-activity?startWeek=2025-08-31&endWeek=2025-09-07"
+```
+
+Response:
+
+```json
+[
+  {
+    "date": "2025-08-31",
+    "distance": 6.8,
+    "duration": 44,
+    "heartRate": { "min": 141, "max": 177, "average": 163 },
+    "caloriesBurned": 475
+  },
+  {
+    "date": "2025-09-04",
+    "distance": 4.5,
+    "duration": 29,
+    "heartRate": { "min": 144, "max": 179, "average": 167 },
+    "caloriesBurned": 325
+  }
+]
 ```
 
 ### 5.4 Error Responses
