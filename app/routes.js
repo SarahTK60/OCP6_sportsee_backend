@@ -12,6 +12,7 @@ const getUserById = (userId) => {
 const router = express.Router();
 
 const { authenticateToken, generateToken } = require("./middleware");
+const { handleNoUser, handleNoUserData } = require("./utils");
 
 /**
  * POST /api/login ✅
@@ -47,7 +48,22 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const user = getUserById(decodedToken.userId);
+
+  if (handleNoUser(res, user)) {
+    return;
+  }
+
   const runningData = user.runningData;
+
+  if (handleNoUserData(res, runningData)) {
+    return;
+  }
+
+  const userInfos = user.userInfos;
+
+  if (handleNoUserData(res, userInfos)) {
+    return;
+  }
 
   // Calculate overall statistics
   const totalDistance = runningData.reduce(
@@ -93,11 +109,15 @@ router.get("/api/user-activity", authenticateToken, (req, res) => {
   }
 
   const user = getUserById(req.user.userId);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  if (handleNoUser(res, user)) {
+    return;
   }
 
   const runningData = user.runningData;
+
+  if (handleNoUserData(res, runningData)) {
+    return;
+  }
 
   // Convert week strings to Date objects
   const startDate = new Date(startWeek);
