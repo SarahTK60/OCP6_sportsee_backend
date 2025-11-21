@@ -153,7 +153,9 @@ Response :
   "statistics": {
     "totalDistance": "2250.2",
     "totalSessions": 348,
-    "totalDuration": 14625
+    "totalDuration": 14625,
+    "totalCaloriesBurned": 159187,
+    "restDays": 262
   }
 }
 ```
@@ -168,22 +170,48 @@ curl -H "Authorization: Bearer your-jwt-token" \
 Response:
 
 ```json
-[
-  {
-    "date": "2025-08-31",
-    "distance": 6.8,
-    "duration": 44,
-    "heartRate": { "min": 141, "max": 177, "average": 163 },
-    "caloriesBurned": 475
-  },
-  {
-    "date": "2025-09-04",
-    "distance": 4.5,
-    "duration": 29,
-    "heartRate": { "min": 144, "max": 179, "average": 167 },
-    "caloriesBurned": 325
+{
+  "sessions": [
+    {
+      "date": "2025-08-31",
+      "distance": 6.8,
+      "duration": 44,
+      "heartRate": {
+        "min": 141,
+        "max": 177,
+        "average": 163
+      },
+      "caloriesBurned": 475
+    },
+    {
+      "date": "2025-09-04",
+      "distance": 4.5,
+      "duration": 29,
+      "heartRate": {
+        "min": 144,
+        "max": 179,
+        "average": 167
+      },
+      "caloriesBurned": 325
+    },
+    {
+      "date": "2025-09-07",
+      "distance": 8.8,
+      "duration": 57,
+      "heartRate": {
+        "min": 139,
+        "max": 179,
+        "average": 162
+      },
+      "caloriesBurned": 615
+    }
+  ],
+  "statistics": {
+    "totalDistance": "20.1",
+    "totalSessions": 3,
+    "totalDuration": 130
   }
-]
+}
 ```
 
 ### 5.4 Error Responses
