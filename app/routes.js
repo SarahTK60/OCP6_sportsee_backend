@@ -74,6 +74,23 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
     (sum, session) => sum + session.duration,
     0
   );
+  const totalCaloriesBurned = runningData.reduce(
+    (sum, session) => sum + session.caloriesBurned,
+    0
+  );
+
+  // Calculate rest days (days without any session)
+  const createdAt = new Date(userInfos.createdAt);
+  const now = new Date();
+  const totalDays = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24)) + 1;
+
+  // Get unique days with sessions (only past dates)
+  const daysWithSessions = new Set(
+    runningData
+      .filter((session) => new Date(session.date) <= now)
+      .map((session) => session.date.split("T")[0])
+  );
+  const restDays = totalDays - daysWithSessions.size;
 
   // Extract user profile information
   const userProfile = {
@@ -94,6 +111,8 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
       totalDistance,
       totalSessions,
       totalDuration,
+      totalCaloriesBurned,
+      restDays,
     },
   });
 });
@@ -140,7 +159,24 @@ router.get("/api/user-activity", authenticateToken, (req, res) => {
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
-  return res.json(sortedSessions);
+  // Calculate statistics for the filtered period
+  const totalDistance = filteredSessions
+    .reduce((sum, session) => sum + session.distance, 0)
+    .toFixed(1);
+  const totalSessions = filteredSessions.length;
+  const totalDuration = filteredSessions.reduce(
+    (sum, session) => sum + session.duration,
+    0
+  );
+
+  return res.json({
+    sessions: sortedSessions,
+    statistics: {
+      totalDistance,
+      totalSessions,
+      totalDuration,
+    },
+  });
 });
 
 module.exports = router;
