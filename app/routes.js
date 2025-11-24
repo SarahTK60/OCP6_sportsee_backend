@@ -66,9 +66,10 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
   }
 
   // Calculate overall statistics
-  const totalDistance = runningData
-    .reduce((sum, session) => sum + session.distance, 0)
-    .toFixed(1);
+  const totalDistance = runningData.reduce(
+    (sum, session) => sum + session.distance,
+    0
+  );
   const totalSessions = runningData.length;
   const totalDuration = runningData.reduce(
     (sum, session) => sum + session.duration,
@@ -160,9 +161,10 @@ router.get("/api/user-activity", authenticateToken, (req, res) => {
   );
 
   // Calculate statistics for the filtered period
-  const totalDistance = filteredSessions
-    .reduce((sum, session) => sum + session.distance, 0)
-    .toFixed(1);
+  const totalDistance = filteredSessions.reduce(
+    (sum, session) => sum + session.distance,
+    0
+  );
   const totalSessions = filteredSessions.length;
   const totalDuration = filteredSessions.reduce(
     (sum, session) => sum + session.duration,
