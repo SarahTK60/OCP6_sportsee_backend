@@ -151,7 +151,7 @@ Response :
     "gender": "female"
   },
   "statistics": {
-    "totalDistance": "2250.2",
+    "totalDistance": 2250.2,
     "totalSessions": 348,
     "totalDuration": 14625,
     "totalCaloriesBurned": 159187,
@@ -207,7 +207,7 @@ Response:
     }
   ],
   "statistics": {
-    "totalDistance": "20.1",
+    "totalDistance": 20.1,
     "totalSessions": 3,
     "totalDuration": 130
   }
