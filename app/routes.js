@@ -65,31 +65,34 @@ router.get("/api/user-info", authenticateToken, (req, res) => {
     return;
   }
 
+  // Filter out future sessions
+  const now = new Date();
+  const pastSessions = runningData.filter(
+    (session) => new Date(session.date) <= now
+  );
+
   // Calculate overall statistics
-  const totalDistance = runningData.reduce(
+  const totalDistance = pastSessions.reduce(
     (sum, session) => sum + session.distance,
     0
   );
-  const totalSessions = runningData.length;
-  const totalDuration = runningData.reduce(
+  const totalSessions = pastSessions.length;
+  const totalDuration = pastSessions.reduce(
     (sum, session) => sum + session.duration,
     0
   );
-  const totalCaloriesBurned = runningData.reduce(
+  const totalCaloriesBurned = pastSessions.reduce(
     (sum, session) => sum + session.caloriesBurned,
     0
   );
 
   // Calculate rest days (days without any session)
   const createdAt = new Date(userInfos.createdAt);
-  const now = new Date();
   const totalDays = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24)) + 1;
 
-  // Get unique days with sessions (only past dates)
+  // Get unique days with sessions (only past dates, already filtered in pastSessions)
   const daysWithSessions = new Set(
-    runningData
-      .filter((session) => new Date(session.date) <= now)
-      .map((session) => session.date.split("T")[0])
+    pastSessions.map((session) => session.date.split("T")[0])
   );
   const restDays = totalDays - daysWithSessions.size;
 
